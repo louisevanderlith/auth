@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:html';
 import 'formstate.dart';
+import 'pathlookup.dart';
 
 class LoginForm extends FormState {
   EmailInputElement _email;
@@ -12,7 +13,7 @@ class LoginForm extends FormState {
     _email = querySelector(emailElem);
     _password = querySelector(passwordElem);
 
-    querySelector(submitBtn).addEventListener("click", onSend);
+    querySelector(submitBtn).onClick.listen(onSend);
     registerValidation();
   }
 
@@ -25,8 +26,8 @@ class LoginForm extends FormState {
   }
 
   void registerValidation() {
-    _email.addEventListener("blur", (e) => {validate(e, _email)});
-    _password.addEventListener("blur", (e) => {validate(e, _password)});
+    _email.onBlur.listen((e) => {validate(e, _email)});
+    _password.onBlur.listen((e) => {validate(e, _password)});
   }
 
   void validate(Event e, InputElement elem) {
@@ -65,19 +66,21 @@ class LoginForm extends FormState {
   }
 
   Future submitSend() async {
+    var url = await buildPath("Secure.API", "login", new List<String>());
     var data =
         jsonEncode({"App": getApp(), "Email": email, "Password": password});
 
-    var req =
-        await HttpRequest.request("/v1/login", method: "POST", sendData: data);
+    var req = await HttpRequest.request(url, method: "POST", sendData: data);
 
-    print(req);
-    afterLogin(req.response['Data']);
+    var obj = jsonDecode(req.response);
+
+    print(obj['Data']);
+    afterLogin(obj['Data']);
   }
 
   Map<String, String> getApp() {
     identifyLocation();
-    
+
     var appUrl = window.localStorage['return'];
     var ip = window.localStorage['ip'];
     var location = window.localStorage['location'];
@@ -100,12 +103,16 @@ class LoginForm extends FormState {
 
   void identifyLocation() {
     if (window.navigator.geolocation != null) {
-      window.navigator.geolocation.getCurrentPosition(enableHighAccuracy: true).then(setLocation);
+      window.navigator.geolocation
+          .getCurrentPosition(enableHighAccuracy: true)
+          .then(setLocation);
     }
   }
 
   void setLocation(Geoposition position) {
-    var location = position.coords.latitude.toString() + ", " + position.coords.longitude.toString();
+    var location = position.coords.latitude.toString() +
+        ", " +
+        position.coords.longitude.toString();
     window.localStorage['location'] = location;
   }
 

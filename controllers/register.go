@@ -1,5 +1,7 @@
 package controllers
 
+import "github.com/louisevanderlith/mango/control"
+
 type RegisterController struct {
 	control.UIController
 }

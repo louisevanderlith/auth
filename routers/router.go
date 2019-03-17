@@ -9,7 +9,6 @@ package routers
 
 import (
 	"github.com/louisevanderlith/auth/controllers"
-	"github.com/louisevanderlith/auth/logic"
 	"github.com/louisevanderlith/mango"
 
 	"github.com/astaxie/beego"
@@ -27,7 +26,7 @@ func Setup(s *mango.Service) {
 }
 
 func EnableFilter(s *mango.Service) *control.ControllerMap {
-	ctrlmap := logic.NewMasterMap(s)
+	ctrlmap := control.CreateControlMap(s)
 
 	emptyMap := make(control.ActionMap)
 
@@ -41,5 +40,5 @@ func EnableFilter(s *mango.Service) *control.ControllerMap {
 		ExposeHeaders:   []string{"Content-Length", "Access-Control-Allow-Origin"},
 	}))
 
-	return ctrlmap.ControllerMap
+	return ctrlmap
 }
