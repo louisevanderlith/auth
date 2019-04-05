@@ -18,5 +18,5 @@ func NewLoginCtrl(ctrlMap *control.ControllerMap) *LoginController {
 // @Success 200 {string} string
 // @router / [get]
 func (req *LoginController) Get() {
-	req.Setup("login")
+	req.Setup("login", "Login", true)
 }
