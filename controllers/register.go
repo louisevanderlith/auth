@@ -18,5 +18,5 @@ func NewRegisterCtrl(ctrlMap *control.ControllerMap) *RegisterController {
 // @Success 200 {string} string
 // @router / [get]
 func (req *RegisterController) Get() {
-	req.Setup("register")
+	req.Setup("register", "Registration", true)
 }
