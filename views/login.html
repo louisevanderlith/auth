@@ -1,34 +1,38 @@
-<section id="Login">
-    <div class="container">
-        <h2 class="text-center blue">Login</h2>
-        <hr class="star-primary">
-        <div class="row">
-            <div class="col-md-8 mx-auto">
-                <form id="frmLogin" role="form" data-toggle="validator">
-                    <div class="control-group">
-                        <div class="form-group floating-label-form-group controls">
-                            <label for="txtIdentity">E-mail Address</label>
-                            <input class="form-control" id="txtIdentity" type="email" minlength="8" placeholder="E-mail address" required data-validation-required-message="Please enter your E-mail address"
-                                data-error="Input is invalid" autocorrect="off" autocapitalize="off">
-                            <p class="with-errors text-danger"></p>
+<section class="hero is-success is-fullheight">
+    <div class="hero-body">
+        <div class="container has-text-centered">
+            <div class="column is-4 is-offset-4">
+                <h3 class="title has-text-grey">Login</h3>
+                <p class="subtitle has-text-grey">Please login to proceed.</p>
+                <div class="box">
+                    <form>
+                        <div class="field">
+                            <div class="control">
+                                <input class="input is-large" type="email" placeholder="Your Email" autofocus="">
+                            </div>
                         </div>
-                    </div>
-                    <div class="control-group">
-                        <div class="form-group floating-label-form-group controls">
-                            <label for="txtPassword">Password</label>
-                            <input class="form-control" id="txtPassword" type="password" placeholder="Password" required data-validation-required-message="Please enter your password"
-                                data-error="Password is Invalid" autocomplete="off" autocorrect="off" autocapitalize="off">
-                            <p class="with-errors text-danger"></p>
+
+                        <div class="field">
+                            <div class="control">
+                                <input class="input is-large" type="password" placeholder="Your Password">
+                            </div>
                         </div>
-                    </div>
-                    <br>
-                    <div class="form-group">
-                        <button type="button" class="btn btn-success btn-lg" id="btnLogin">Login</button>
-                        <button type="button" class="btn btn-info btn-lg disabled" id="btnRegister">Register</button>
-                    </div>
-                </form>
-                <div id="success"></div>
+                        <div class="field">
+                            <label class="checkbox">
+              <input type="checkbox">
+              Remember me
+            </label>
+                        </div>
+                        <button class="button is-block is-info is-large is-fullwidth">Login</button>
+                    </form>
+                </div>
+                <p class="has-text-grey">
+                    <a href="../">Sign Up</a> &nbsp;·&nbsp;
+                    <a href="../">Forgot Password</a> &nbsp;·&nbsp;
+                    <a href="../">Need Help?</a>
+                </p>
             </div>
         </div>
     </div>
 </section>
+<script async type="text/javascript" src="../js/bulma.js"></script>
