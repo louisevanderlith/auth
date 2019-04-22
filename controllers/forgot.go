@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"github.com/louisevanderlith/mango"
 	"github.com/louisevanderlith/mango/control"
 )
 
@@ -8,8 +9,9 @@ type ForgotController struct {
 	control.UIController
 }
 
-func NewForgotCtrl(ctrlMap *control.ControllerMap) *ForgotController {
+func NewForgotCtrl(ctrlMap *control.ControllerMap, setting mango.ThemeSetting) *ForgotController {
 	result := &ForgotController{}
+	result.SetTheme(setting)
 	result.SetInstanceMap(ctrlMap)
 
 	return result
