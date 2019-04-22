@@ -1,13 +1,17 @@
 package controllers
 
-import "github.com/louisevanderlith/mango/control"
+import (
+	"github.com/louisevanderlith/mango"
+	"github.com/louisevanderlith/mango/control"
+)
 
 type LoginController struct {
 	control.UIController
 }
 
-func NewLoginCtrl(ctrlMap *control.ControllerMap) *LoginController {
+func NewLoginCtrl(ctrlMap *control.ControllerMap, setting mango.ThemeSetting) *LoginController {
 	result := &LoginController{}
+	result.SetTheme(setting)
 	result.SetInstanceMap(ctrlMap)
 
 	return result

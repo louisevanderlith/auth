@@ -42,7 +42,6 @@ class FormState {
   }
 
   void pressEnter(KeyboardEvent e) {
-    print(e.key);
     if (e.key != 'Enter') {
       return;
     }
