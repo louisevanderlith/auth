@@ -12,33 +12,37 @@ import (
 	"github.com/louisevanderlith/mango"
 
 	"github.com/astaxie/beego"
-	"github.com/astaxie/beego/plugins/cors"
 	"github.com/louisevanderlith/mango/control"
+	secure "github.com/louisevanderlith/secure/core"
+	"github.com/louisevanderlith/secure/core/roletype"
 )
 
 func Setup(s *mango.Service) {
 	ctrlmap := EnableFilter(s)
 
-	lognCtrl := controllers.NewLoginCtrl(ctrlmap)
+	siteName := beego.AppConfig.String("defaultsite")
+	theme, err := mango.GetDefaultTheme(ctrlmap.GetInstanceID(), siteName)
+
+	if err != nil {
+		panic(err)
+	}
+
+	lognCtrl := controllers.NewLoginCtrl(ctrlmap, theme)
 
 	beego.Router("/login", lognCtrl, "get:Get")
-	beego.Router("/register", controllers.NewRegisterCtrl(ctrlmap), "get:Get")
+	beego.Router("/register", controllers.NewRegisterCtrl(ctrlmap, theme), "get:Get")
 }
 
 func EnableFilter(s *mango.Service) *control.ControllerMap {
 	ctrlmap := control.CreateControlMap(s)
 
-	emptyMap := make(control.ActionMap)
+	emptyMap := make(secure.ActionMap)
+	emptyMap["DELETE"] = roletype.User
 
 	ctrlmap.Add("/login", emptyMap)
 	ctrlmap.Add("/register", emptyMap)
 
-	beego.InsertFilter("*", beego.BeforeRouter, cors.Allow(&cors.Options{
-		AllowAllOrigins: true,
-		AllowMethods:    []string{"GET", "POST", "OPTIONS"},
-		AllowHeaders:    []string{"Origin", "Authorization", "Access-Control-Allow-Origin", "Content-Type"},
-		ExposeHeaders:   []string{"Content-Length", "Access-Control-Allow-Origin"},
-	}))
+	beego.InsertFilter("/*", beego.BeforeRouter, ctrlmap.FilterUI)
 
 	return ctrlmap
 }

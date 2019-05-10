@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:html';
 import 'formstate.dart';
 import 'pathlookup.dart';
+import 'app.dart';
 
 class LoginForm extends FormState {
   EmailInputElement _email;
@@ -14,7 +15,7 @@ class LoginForm extends FormState {
     _password = querySelector(passwordElem);
 
     querySelector(submitBtn).onClick.listen(onSend);
-    registerValidation();
+    registerFormElements([_email, _password]);
   }
 
   String get email {
@@ -23,39 +24,6 @@ class LoginForm extends FormState {
 
   String get password {
     return _password.value;
-  }
-
-  void registerValidation() {
-    _email.onBlur.listen((e) => {validate(e, _email)});
-    _password.onBlur.listen((e) => {validate(e, _password)});
-  }
-
-  void validate(Event e, InputElement elem) {
-    var elemValid = elem.checkValidity();
-
-    if (!elemValid) {
-      elem.setAttribute("invalid", "");
-    } else {
-      elem.removeAttribute("invalid");
-    }
-
-    elem.nextElementSibling.text = elem.validationMessage;
-
-    super.disableSubmit(!super.isFormValid());
-  }
-
-  void validateArea(Event e, TextAreaElement elem) {
-    var elemValid = elem.checkValidity();
-
-    if (!elemValid) {
-      elem.setAttribute("invalid", "");
-    } else {
-      elem.removeAttribute("invalid");
-    }
-
-    elem.nextElementSibling.text = elem.validationMessage;
-
-    super.disableSubmit(!super.isFormValid());
   }
 
   void onSend(Event e) {
@@ -74,51 +42,18 @@ class LoginForm extends FormState {
 
     var obj = jsonDecode(req.response);
 
-    print(obj['Data']);
-    afterLogin(obj['Data']);
+    if (obj['Error'] != "") {
+      print(obj['Error']);
+      return;
+    }
+
+    afterSend(obj['Data']);
   }
 
-  Map<String, String> getApp() {
-    identifyLocation();
-
-    var appUrl = window.localStorage['return'];
-    var ip = window.localStorage['ip'];
-    var location = window.localStorage['location'];
-    HiddenInputElement instanceElem = querySelector("#InstanceID");
-
-    return {
-      "Name": appUrl,
-      "IP": ip,
-      "Location": location,
-      "InstanceID": instanceElem.value
-    };
-  }
-
-  void afterLogin(String sessionID) {
+  void afterSend(String sessionID) {
     var finalURL = window.localStorage['return'];
-    finalURL += "?token=" + sessionID;
+    finalURL += "?access_token=" + sessionID;
 
     window.location.replace(finalURL);
-  }
-
-  void identifyLocation() {
-    if (window.navigator.geolocation != null) {
-      window.navigator.geolocation
-          .getCurrentPosition(enableHighAccuracy: true)
-          .then(setLocation);
-    }
-  }
-
-  void setLocation(Geoposition position) {
-    var location = position.coords.latitude.toString() +
-        ", " +
-        position.coords.longitude.toString();
-    window.localStorage['location'] = location;
-  }
-
-  Future<String> getIP() async {
-    var resp = await HttpRequest.getString('http://jsonip.com');
-
-    return jsonDecode(resp)["ip"];
   }
 }
