@@ -10,9 +10,8 @@ void main() {
 }
 
 String getParameterByName(String name, [String url]) {
-    if (url == null)
-        url = window.location.href;
+  if (url == null) url = window.location.href;
 
-    var uri = Uri.parse(url);
-    return uri.queryParameters[name];
+  var uri = Uri.parse(url);
+  return uri.queryParameters[name];
 }

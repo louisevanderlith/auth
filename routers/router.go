@@ -12,9 +12,9 @@ import (
 	"github.com/louisevanderlith/mango"
 
 	"github.com/astaxie/beego"
-	"github.com/astaxie/beego/plugins/cors"
 	"github.com/louisevanderlith/mango/control"
 	secure "github.com/louisevanderlith/secure/core"
+	"github.com/louisevanderlith/secure/core/roletype"
 )
 
 func Setup(s *mango.Service) {
@@ -37,16 +37,12 @@ func EnableFilter(s *mango.Service) *control.ControllerMap {
 	ctrlmap := control.CreateControlMap(s)
 
 	emptyMap := make(secure.ActionMap)
+	emptyMap["DELETE"] = roletype.User
 
 	ctrlmap.Add("/login", emptyMap)
 	ctrlmap.Add("/register", emptyMap)
 
-	beego.InsertFilter("*", beego.BeforeRouter, cors.Allow(&cors.Options{
-		AllowAllOrigins: true,
-		AllowMethods:    []string{"GET", "POST", "OPTIONS"},
-		AllowHeaders:    []string{"Origin", "Authorization", "Access-Control-Allow-Origin", "Content-Type"},
-		ExposeHeaders:   []string{"Content-Length", "Access-Control-Allow-Origin"},
-	}))
+	beego.InsertFilter("/*", beego.BeforeRouter, ctrlmap.FilterUI)
 
 	return ctrlmap
 }

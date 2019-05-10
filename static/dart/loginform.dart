@@ -42,13 +42,17 @@ class LoginForm extends FormState {
 
     var obj = jsonDecode(req.response);
 
-    print(obj['Data']);
+    if (obj['Error'] != "") {
+      print(obj['Error']);
+      return;
+    }
+
     afterSend(obj['Data']);
   }
 
   void afterSend(String sessionID) {
     var finalURL = window.localStorage['return'];
-    finalURL += "?token=" + sessionID;
+    finalURL += "?access_token=" + sessionID;
 
     window.location.replace(finalURL);
   }
