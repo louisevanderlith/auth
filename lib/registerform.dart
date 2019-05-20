@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:html';
 import 'app.dart';
@@ -19,7 +20,6 @@ class RegisterForm extends FormState {
     _confirm = querySelector(confirmElem);
 
     querySelector(submitBtn).onClick.listen(onSend);
-    registerFormElements([_name, _email, _password, _confirm]);
   }
 
   String get name {
@@ -41,7 +41,9 @@ class RegisterForm extends FormState {
   void onSend(Event e) {
     if (isFormValid() && passwordsMatch()) {
       disableSubmit(true);
-      submitSend().then((obj) => {disableSubmit(false)});
+      submitSend().then((obj) {
+        disableSubmit(false);
+      });
     }
   }
 

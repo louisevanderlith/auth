@@ -1,11 +1,12 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:html';
 
-Map<String, String> getApp() {
+Future<Map<String, String>> getApp() async {
   identifyLocation();
 
   var appUrl = window.localStorage['return'];
-  var ip = window.localStorage['ip'];
+  var ip = await getIP();
   var location = window.localStorage['location'];
   HiddenInputElement instanceElem = querySelector("#InstanceID");
 
@@ -18,22 +19,21 @@ Map<String, String> getApp() {
 }
 
 void identifyLocation() {
-  if (window.navigator.geolocation != null) {
+  if (window.navigator != null) {
     window.navigator.geolocation
         .getCurrentPosition(enableHighAccuracy: true)
-        .then(setLocation);
+        .then((Geoposition position) {
+      var location =
+          '${position.coords.latitude}, ${position.coords.longitude}';
+      window.localStorage['location'] = location;
+    }).catchError((err) {
+      print('Position Error: ${err.error}');
+    });
   }
 }
 
-void setLocation(Geoposition position) {
-  var location = position.coords.latitude.toString() +
-      ", " +
-      position.coords.longitude.toString();
-  window.localStorage['location'] = location;
-}
-
 Future<String> getIP() async {
-  var resp = await HttpRequest.getString('http://jsonip.com');
+  var resp = await HttpRequest.getString('https://jsonip.com');
 
   return jsonDecode(resp)["ip"];
 }
