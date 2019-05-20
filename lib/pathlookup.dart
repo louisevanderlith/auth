@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:html';
 import 'dart:convert';
 
@@ -19,8 +20,8 @@ Future<String> getRouterPath(String apiName) async {
 
 Future<String> doLookup(String apiName) async {
   var routerPath = await getRouterPath(apiName);
-  var resp = await HttpRequest.getString(routerPath, onProgress: lookupProgress);
-  final json = jsonDecode(resp);
+  var resp = await HttpRequest.request(routerPath, method: "GET", onProgress: lookupProgress);
+  final json = jsonDecode(resp.response);
 
   print(json);
   return json["Data"];
@@ -38,7 +39,6 @@ Future<String> getServiceURL(String apiName) async {
     _pastNames[apiName] = serviceURL;
   }
 
-  print(serviceURL);
   return serviceURL;
 }
 

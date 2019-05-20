@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"os"
+	"path"
 
 	"github.com/louisevanderlith/auth/routers"
 	"github.com/louisevanderlith/mango"
@@ -13,7 +14,9 @@ import (
 
 func main() {
 	mode := os.Getenv("RUNMODE")
-	pubPath := os.Getenv("KEYPATH")
+	keyPath := os.Getenv("KEYPATH")
+	pubName := os.Getenv("PUBLICKEY")
+	pubPath := path.Join(keyPath, pubName)
 
 	// Register with router
 	appName := beego.BConfig.AppName
