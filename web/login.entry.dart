@@ -1,6 +1,6 @@
 import 'dart:html';
 
-import 'loginform.dart';
+import 'package:Auth.APP/loginform.dart';
 
 void main() {
   print("Running Login.Entry");

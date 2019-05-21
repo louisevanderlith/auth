@@ -1,4 +1,5 @@
-import 'registerform.dart';
+
+import 'package:Auth.APP/registerform.dart';
 
 void main() {
   print("Running Register.Entry");

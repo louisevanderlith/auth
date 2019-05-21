@@ -31,16 +31,20 @@ func Setup(s *mango.Service) {
 
 	beego.Router("/login", lognCtrl, "get:Get")
 	beego.Router("/register", controllers.NewRegisterCtrl(ctrlmap, theme), "get:Get")
+	beego.Router("/subscribe", controllers.NewSubscribeCtrl(ctrlmap, theme), "get:Get")
 }
 
 func EnableFilter(s *mango.Service) *control.ControllerMap {
 	ctrlmap := control.CreateControlMap(s)
 
 	emptyMap := make(secure.ActionMap)
+	ctrlmap.Add("/subscribe", emptyMap)
+
+	userMap := make(secure.ActionMap)
 	emptyMap["DELETE"] = roletype.User
 
-	ctrlmap.Add("/login", emptyMap)
-	ctrlmap.Add("/register", emptyMap)
+	ctrlmap.Add("/login", userMap)
+	ctrlmap.Add("/register", userMap)
 
 	beego.InsertFilter("/*", beego.BeforeRouter, ctrlmap.FilterUI)
 
