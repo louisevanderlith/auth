@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:html';
+import 'package:Auth.APP/secureapi.dart';
+
 import 'formstate.dart';
 import 'pathlookup.dart';
 import 'app.dart';
@@ -28,42 +30,22 @@ class LoginForm extends FormState {
     return _password.value;
   }
 
-  void onSend(Event e) {
+  void onSend(Event e) async {
     if (isFormValid()) {
       disableSubmit(true);
-      submitSend().then((x) {
-        disableSubmit(false);
-      });
-    }
-  }
 
-  Future submitSend() async {
-    var url = await buildPath("Secure.API", "login", new List<String>());
-    var data = jsonEncode(
-        {"App": await getApp(), "Email": email, "Password": password});
+      final app = await getApp();
+      var result = await sendLogin(app, email, password);
+      var obj = jsonDecode(result.response);
 
-    HttpRequest.request(url,
-            method: "POST", sendData: data, onProgress: loginProgress)
-        .then((HttpRequest req) {
-      var obj = jsonDecode(req.response);
-
-      if (obj['Error'] != "") {
+      if (result.status == 200) {
+        afterSend(obj['Data']);
+      } else {
         _error.text = obj['Error'];
-        return;
       }
-
-      afterSend(obj['Data']);
-    }).catchError((e) {
-      _error.text = e.error;
-    });
-  }
-
-  void loginProgress(ProgressEvent e) {
-    if (e.lengthComputable) {
-      print('Progress... ${e.total}/${e.loaded}');
     }
   }
-
+  
   void afterSend(String sessionID) {
     var finalURL = window.localStorage['return'];
     finalURL += "?access_token=" + sessionID;
