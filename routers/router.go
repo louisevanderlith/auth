@@ -32,6 +32,7 @@ func Setup(s *mango.Service) {
 	beego.Router("/login", lognCtrl, "get:Get")
 	beego.Router("/register", controllers.NewRegisterCtrl(ctrlmap, theme), "get:Get")
 	beego.Router("/subscribe", controllers.NewSubscribeCtrl(ctrlmap, theme), "get:Get")
+	beego.Router("/forgot/:forgotKey", controllers.NewForgotCtrl(ctrlmap, theme), "get:Get")
 }
 
 func EnableFilter(s *mango.Service) *control.ControllerMap {

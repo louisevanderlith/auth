@@ -20,7 +20,7 @@ func NewForgotCtrl(ctrlMap *control.ControllerMap, setting mango.ThemeSetting) *
 // @Title GetForgotPage
 // @Description Gets the form a user must fill in to reset their password
 // @Success 200 {string} string
-// @router / [get]
+// @router /:forgotKey [get]
 func (req *ForgotController) Get() {
 	req.Setup("forgot", "Forgot Password", false)
 }
