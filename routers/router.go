@@ -14,7 +14,6 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/louisevanderlith/mango/control"
 	secure "github.com/louisevanderlith/secure/core"
-	"github.com/louisevanderlith/secure/core/roletype"
 )
 
 func Setup(s *mango.Service) {
@@ -32,7 +31,8 @@ func Setup(s *mango.Service) {
 	beego.Router("/login", lognCtrl, "get:Get")
 	beego.Router("/register", controllers.NewRegisterCtrl(ctrlmap, theme), "get:Get")
 	beego.Router("/subscribe", controllers.NewSubscribeCtrl(ctrlmap, theme), "get:Get")
-	beego.Router("/forgot/:forgotKey", controllers.NewForgotCtrl(ctrlmap, theme), "get:Get")
+
+	beego.Router("/forgot", controllers.NewForgotCtrl(ctrlmap, theme), "get:Get")
 }
 
 func EnableFilter(s *mango.Service) *control.ControllerMap {
@@ -40,12 +40,9 @@ func EnableFilter(s *mango.Service) *control.ControllerMap {
 
 	emptyMap := make(secure.ActionMap)
 	ctrlmap.Add("/subscribe", emptyMap)
-
-	userMap := make(secure.ActionMap)
-	emptyMap["DELETE"] = roletype.User
-
-	ctrlmap.Add("/login", userMap)
-	ctrlmap.Add("/register", userMap)
+	ctrlmap.Add("/login", emptyMap)
+	ctrlmap.Add("/register", emptyMap)
+	ctrlmap.Add("/forgot", emptyMap)
 
 	beego.InsertFilter("/*", beego.BeforeRouter, ctrlmap.FilterUI)
 
