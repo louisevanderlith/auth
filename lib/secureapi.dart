@@ -12,8 +12,6 @@ Future<HttpRequest> sendLogin(
   final compltr = new Completer<HttpRequest>();
   final request = HttpRequest();
   request.open("POST", url);
-  /*request.setRequestHeader(
-      "Authorization", "Bearer " + window.localStorage['avosession']);*/
   request.onLoadEnd
       .listen((e) => compltr.complete(request), onError: compltr.completeError);
   request.onError.listen(compltr.completeError);
