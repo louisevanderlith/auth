@@ -1,17 +1,20 @@
+import 'dart:convert';
 import 'dart:html';
-
 import 'package:Auth.APP/formstate.dart';
+import 'package:Auth.APP/secureapi.dart';
 
-class ForgotForm extends FormState{
+class ForgotForm extends FormState {
   EmailInputElement _identity;
+  ParagraphElement _error;
 
   ForgotForm(String idElem, String identityElem, String submitBtn)
-  :super(idElem, submitBtn){
+      : super(idElem, submitBtn) {
     _identity = querySelector(identityElem);
+    _error = querySelector("${idElem}Err");
 
     querySelector(submitBtn).onClick.listen(onSend);
   }
-  
+
   String get identity {
     return _identity.value;
   }
@@ -24,17 +27,9 @@ class ForgotForm extends FormState{
       var obj = jsonDecode(result.response);
 
       if (result.status == 200) {
-        afterSend(obj['Data']);
-      } else {
-        _error.text = obj['Error'];
+        final fkey = obj['Data'];
+        print(fkey);
       }
     }
-  }
-  
-  void afterSend(String sessionID) {
-    var finalURL = window.localStorage['return'];
-    finalURL += "?access_token=" + sessionID;
-
-    window.location.replace(finalURL);
   }
 }

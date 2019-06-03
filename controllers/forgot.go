@@ -22,5 +22,5 @@ func NewForgotCtrl(ctrlMap *control.ControllerMap, setting mango.ThemeSetting) *
 // @Success 200 {string} string
 // @router /:forgotKey [get]
 func (req *ForgotController) Get() {
-	req.Setup("forgot", "Forgot Password", false)
+	req.Setup("forgot", "Forgot Password", true)
 }

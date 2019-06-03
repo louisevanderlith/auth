@@ -12,8 +12,6 @@ Future<HttpRequest> sendLogin(
   final compltr = new Completer<HttpRequest>();
   final request = HttpRequest();
   request.open("POST", url);
-  request.setRequestHeader(
-      "Authorization", "Bearer " + window.localStorage['avosession']);
   request.onLoadEnd
       .listen((e) => compltr.complete(request), onError: compltr.completeError);
   request.onError.listen(compltr.completeError);
@@ -24,14 +22,13 @@ Future<HttpRequest> sendLogin(
 }
 
 Future<HttpRequest> sendForgot(String identity) async {
-  final url = await buildPath("Secure.API", "login", new List<String>());
-  final data = jsonEncode({"App": app, "Email": email, "Password": password});
+  final url = await buildPath("Secure.API", "forgot", new List<String>());
+  final data = jsonEncode(identity);
 
   final compltr = new Completer<HttpRequest>();
   final request = HttpRequest();
   request.open("POST", url);
-  request.setRequestHeader(
-      "Authorization", "Bearer " + window.localStorage['avosession']);
+  request.setRequestHeader("Content-Type", "text/json;charset=UTF-8");
   request.onLoadEnd
       .listen((e) => compltr.complete(request), onError: compltr.completeError);
   request.onError.listen(compltr.completeError);
