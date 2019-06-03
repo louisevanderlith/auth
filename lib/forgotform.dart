@@ -1,7 +1,5 @@
 import 'dart:convert';
 import 'dart:html';
-
-import 'package:Auth.APP/commsapi.dart';
 import 'package:Auth.APP/formstate.dart';
 import 'package:Auth.APP/secureapi.dart';
 
