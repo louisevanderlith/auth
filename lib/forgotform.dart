@@ -29,6 +29,8 @@ class ForgotForm extends FormState {
       if (result.status == 200) {
         final fkey = obj['Data'];
         print(fkey);
+      } else {
+        _error.text = obj['Error'];
       }
     }
   }
