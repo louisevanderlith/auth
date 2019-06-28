@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:html';
 
-import 'package:Auth.APP/pathlookup.dart';
+import 'package:mango_ui/pathlookup.dart';
 
 Future<HttpRequest> sendResetRequest(
     String resetLink, String username, String email) async {

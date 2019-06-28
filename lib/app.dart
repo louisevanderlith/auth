@@ -2,7 +2,9 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:html';
 
-Future<Map<String, String>> getApp() async {
+import 'package:mango_ui/bodies/app.dart';
+
+Future<App> getApp() async {
   identifyLocation();
 
   var appUrl = window.localStorage['return'];
@@ -10,12 +12,7 @@ Future<Map<String, String>> getApp() async {
   var location = window.localStorage['location'];
   HiddenInputElement instanceElem = querySelector("#InstanceID");
 
-  return {
-    "Name": appUrl,
-    "IP": ip,
-    "Location": location,
-    "InstanceID": instanceElem.value
-  };
+  return new App(appUrl, ip, location, instanceElem.value);
 }
 
 void identifyLocation() {
