@@ -1,20 +1,9 @@
 package controllers
 
-import (
-	"github.com/louisevanderlith/mango"
-	"github.com/louisevanderlith/mango/control"
-)
+import "github.com/louisevanderlith/droxolite/xontrols"
 
 type ForgotController struct {
-	control.UIController
-}
-
-func NewForgotCtrl(ctrlMap *control.ControllerMap, setting mango.ThemeSetting) *ForgotController {
-	result := &ForgotController{}
-	result.SetTheme(setting)
-	result.SetInstanceMap(ctrlMap)
-
-	return result
+	xontrols.UICtrl
 }
 
 // @Title GetForgotPage

@@ -9,9 +9,8 @@ void main() {
   new LoginForm("#frmLogin", "#txtIdentity", "#txtPassword", "#btnLogin");
 }
 
-String getParameterByName(String name, [String url]) {
-  if (url == null) url = window.location.href;
-
+String getParameterByName(String name) {
+  final url = window.location.href;
   var uri = Uri.parse(url);
   return uri.queryParameters[name];
 }

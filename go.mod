@@ -1,7 +1,3 @@
 module github.com/louisevanderlith/auth
 
-require (
-	github.com/astaxie/beego v1.11.1
-	github.com/louisevanderlith/mango v0.3.64
-	github.com/louisevanderlith/secure v0.1.16
-)
+require github.com/louisevanderlith/droxolite v1.0.0

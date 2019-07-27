@@ -1,20 +1,9 @@
 package controllers
 
-import (
-	"github.com/louisevanderlith/mango"
-	"github.com/louisevanderlith/mango/control"
-)
+import "github.com/louisevanderlith/droxolite/xontrols"
 
 type RegisterController struct {
-	control.UIController
-}
-
-func NewRegisterCtrl(ctrlMap *control.ControllerMap, setting mango.ThemeSetting) *RegisterController {
-	result := &RegisterController{}
-	result.SetTheme(setting)
-	result.SetInstanceMap(ctrlMap)
-
-	return result
+	xontrols.UICtrl
 }
 
 // @Title GetRegisterPage

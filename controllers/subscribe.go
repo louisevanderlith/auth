@@ -1,20 +1,9 @@
 package controllers
 
-import (
-	"github.com/louisevanderlith/mango"
-	"github.com/louisevanderlith/mango/control"
-)
+import "github.com/louisevanderlith/droxolite/xontrols"
 
 type SubscribeController struct {
-	control.UIController
-}
-
-func NewSubscribeCtrl(ctrlMap *control.ControllerMap, setting mango.ThemeSetting) *SubscribeController {
-	result := &SubscribeController{}
-	result.SetTheme(setting)
-	result.SetInstanceMap(ctrlMap)
-
-	return result
+	xontrols.UICtrl
 }
 
 // @Title GetSubribePage
