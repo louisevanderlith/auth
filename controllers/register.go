@@ -1,6 +1,10 @@
 package controllers
 
-import "github.com/louisevanderlith/droxolite/xontrols"
+import (
+	"net/http"
+
+	"github.com/louisevanderlith/droxolite/xontrols"
+)
 
 type RegisterController struct {
 	xontrols.UICtrl
@@ -12,4 +16,6 @@ type RegisterController struct {
 // @router / [get]
 func (req *RegisterController) Get() {
 	req.Setup("register", "Registration", true)
+
+	req.Serve(http.StatusOK, nil, nil)
 }

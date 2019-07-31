@@ -1,6 +1,10 @@
 package controllers
 
-import "github.com/louisevanderlith/droxolite/xontrols"
+import (
+	"net/http"
+
+	"github.com/louisevanderlith/droxolite/xontrols"
+)
 
 type SubscribeController struct {
 	xontrols.UICtrl
@@ -12,4 +16,6 @@ type SubscribeController struct {
 // @router / [get]
 func (req *SubscribeController) Get() {
 	req.Setup("subscribe", "Subscribe", false)
+
+	req.Serve(http.StatusOK, nil, nil)
 }

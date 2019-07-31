@@ -1,6 +1,10 @@
 package controllers
 
-import "github.com/louisevanderlith/droxolite/xontrols"
+import (
+	"net/http"
+
+	"github.com/louisevanderlith/droxolite/xontrols"
+)
 
 type LoginController struct {
 	xontrols.UICtrl
@@ -12,4 +16,6 @@ type LoginController struct {
 // @router / [get]
 func (req *LoginController) Get() {
 	req.Setup("login", "Login", true)
+
+	req.Serve(http.StatusOK, nil, nil)
 }

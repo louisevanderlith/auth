@@ -16,7 +16,9 @@ func Setup(poxy *droxolite.Epoxy) {
 	//Login
 	lognCtrl := &controllers.LoginController{}
 	lognGroup := droxolite.NewRouteGroup("login", lognCtrl)
-	lognGroup.AddRoute("/", "GET", roletype.Unknown, lognCtrl.Get)
+	q := make(map[string]string)
+	q["return"] = "{return}"
+	lognGroup.AddRouteWithQueries("", "GET", roletype.Unknown, q, lognCtrl.Get)
 	poxy.AddGroup(lognGroup)
 
 	//Register
