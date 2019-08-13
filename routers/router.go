@@ -10,7 +10,7 @@ func Setup(poxy *droxolite.Epoxy) {
 	//Forgot
 	frgtCtrl := &controllers.ForgotController{}
 	frgtGroup := droxolite.NewRouteGroup("forgot", frgtCtrl)
-	frgtGroup.AddRoute("/", "GET", roletype.Unknown, frgtCtrl.Get)
+	frgtGroup.AddRoute("Get Forgot", "/", "GET", roletype.Unknown, frgtCtrl.Get)
 	poxy.AddGroup(frgtGroup)
 
 	//Login
@@ -18,19 +18,19 @@ func Setup(poxy *droxolite.Epoxy) {
 	lognGroup := droxolite.NewRouteGroup("login", lognCtrl)
 	q := make(map[string]string)
 	q["return"] = "{return}"
-	lognGroup.AddRouteWithQueries("", "GET", roletype.Unknown, q, lognCtrl.Get)
+	lognGroup.AddRouteWithQueries("Login", "", "GET", roletype.Unknown, q, lognCtrl.Get)
 	poxy.AddGroup(lognGroup)
 
 	//Register
 	regCtrl := &controllers.RegisterController{}
 	regGroup := droxolite.NewRouteGroup("register", regCtrl)
-	regGroup.AddRoute("/", "GET", roletype.Unknown, regCtrl.Get)
+	regGroup.AddRoute("Register", "/", "GET", roletype.Unknown, regCtrl.Get)
 	poxy.AddGroup(regGroup)
 
 	//Subscribe
 	subCtrl := &controllers.SubscribeController{}
 	subGroup := droxolite.NewRouteGroup("upload", subCtrl)
-	subGroup.AddRoute("/", "GET", roletype.Unknown, subCtrl.Get)
+	subGroup.AddRoute("Subscribe", "/", "GET", roletype.Unknown, subCtrl.Get)
 	poxy.AddGroup(frgtGroup)
 
 	/*ctrlmap := EnableFilter(s)
