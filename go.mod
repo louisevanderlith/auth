@@ -1,3 +1,3 @@
 module github.com/louisevanderlith/auth
 
-require github.com/louisevanderlith/droxolite v1.2.9
+require github.com/louisevanderlith/droxolite v1.3.0
