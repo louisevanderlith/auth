@@ -3,19 +3,18 @@ package controllers
 import (
 	"net/http"
 
-	"github.com/louisevanderlith/droxolite/xontrols"
+	"github.com/louisevanderlith/droxolite/context"
 )
 
-type RegisterController struct {
-	xontrols.UICtrl
+type Register struct {
 }
 
 // @Title GetRegisterPage
 // @Description Gets the form a user must fill in to register
 // @Success 200 {string} string
 // @router / [get]
-func (req *RegisterController) Get() {
-	req.Setup("register", "Registration", true)
+func (req *Register) Default(ctx context.Contexer) (int, interface{}) {
+	//req.Setup("register", "Registration", true)
 
-	req.Serve(http.StatusOK, nil, nil)
+	return http.StatusOK, nil
 }

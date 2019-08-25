@@ -3,19 +3,18 @@ package controllers
 import (
 	"net/http"
 
-	"github.com/louisevanderlith/droxolite/xontrols"
+	"github.com/louisevanderlith/droxolite/context"
 )
 
-type SubscribeController struct {
-	xontrols.UICtrl
+type Subscribe struct {
 }
 
 // @Title GetSubribePage
 // @Description Gets the form a user must fill in to allow a service
 // @Success 200 {string} string
 // @router / [get]
-func (req *SubscribeController) Get() {
-	req.Setup("subscribe", "Subscribe", false)
+func (req *Subscribe) Default(ctx context.Contexer) (int, interface{}) {
+	//req.Setup("subscribe", "Subscribe", false)
 
-	req.Serve(http.StatusOK, nil, nil)
+	return http.StatusOK, nil
 }

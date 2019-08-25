@@ -3,19 +3,18 @@ package controllers
 import (
 	"net/http"
 
-	"github.com/louisevanderlith/droxolite/xontrols"
+	"github.com/louisevanderlith/droxolite/context"
 )
 
-type ForgotController struct {
-	xontrols.UICtrl
+type Forgot struct {
 }
 
 // @Title GetForgotPage
 // @Description Gets the form a user must fill in to reset their password
 // @Success 200 {string} string
 // @router /:forgotKey [get]
-func (req *ForgotController) Get() {
-	req.Setup("forgot", "Forgot Password", true)
+func (req *Forgot) Default(ctx context.Contexer) (int, interface{}) {
+	//req.Setup("forgot", "Forgot Password", true)
 
-	req.Serve(http.StatusOK, nil, nil)
+	return http.StatusOK, nil
 }

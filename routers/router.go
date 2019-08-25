@@ -2,67 +2,21 @@ package routers
 
 import (
 	"github.com/louisevanderlith/auth/controllers"
-	"github.com/louisevanderlith/droxolite"
+	"github.com/louisevanderlith/droxolite/resins"
 	"github.com/louisevanderlith/droxolite/roletype"
+	"github.com/louisevanderlith/droxolite/routing"
 )
 
-func Setup(poxy *droxolite.Epoxy) {
-	//Forgot
-	frgtCtrl := &controllers.ForgotController{}
-	frgtGroup := droxolite.NewRouteGroup("forgot", frgtCtrl)
-	frgtGroup.AddRoute("Get Forgot", "/", "GET", roletype.Unknown, frgtCtrl.Get)
-	poxy.AddGroup(frgtGroup)
+func Setup(e resins.Epoxi) {
+	homeCtrl := &controllers.Home{}
+	lognCtrl := &controllers.Login{}
+	regCtrl := &controllers.Register{}
+	frgtCtrl := &controllers.Forgot{}
+	subCtrl := &controllers.Subscribe{}
 
-	//Login
-	lognCtrl := &controllers.LoginController{}
-	lognGroup := droxolite.NewRouteGroup("login", lognCtrl)
-	q := make(map[string]string)
-	q["return"] = "{return}"
-	lognGroup.AddRouteWithQueries("Login", "", "GET", roletype.Unknown, q, lognCtrl.Get)
-	poxy.AddGroup(lognGroup)
-
-	//Register
-	regCtrl := &controllers.RegisterController{}
-	regGroup := droxolite.NewRouteGroup("register", regCtrl)
-	regGroup.AddRoute("Register", "/", "GET", roletype.Unknown, regCtrl.Get)
-	poxy.AddGroup(regGroup)
-
-	//Subscribe
-	subCtrl := &controllers.SubscribeController{}
-	subGroup := droxolite.NewRouteGroup("upload", subCtrl)
-	subGroup.AddRoute("Subscribe", "/", "GET", roletype.Unknown, subCtrl.Get)
-	poxy.AddGroup(frgtGroup)
-
-	/*ctrlmap := EnableFilter(s)
-
-	siteName := beego.AppConfig.String("defaultsite")
-	theme, err := mango.GetDefaultTheme(ctrlmap.GetInstanceID(), siteName)
-
-	if err != nil {
-		panic(err)
-	}
-
-	lognCtrl := controllers.NewLoginCtrl(ctrlmap, theme)
-
-	beego.Router("/login", lognCtrl, "get:Get")
-	beego.Router("/register", controllers.NewRegisterCtrl(ctrlmap, theme), "get:Get")
-	beego.Router("/subscribe", controllers.NewSubscribeCtrl(ctrlmap, theme), "get:Get")
-
-	beego.Router("/forgot", controllers.NewForgotCtrl(ctrlmap, theme), "get:Get")*/
+	authGroup := routing.NewInterfaceBundle("", roletype.Unknown, homeCtrl, lognCtrl, regCtrl, frgtCtrl, subCtrl)
+	//q := make(map[string]string)
+	//q["return"] = "{return}"
+	//authGroup.AddRouteWithQueries("Login", "", "GET", roletype.Unknown, q, lognCtrl.Default)
+	e.AddGroup(authGroup)
 }
-
-/*
-func EnableFilter(s *mango.Service) *control.ControllerMap {
-	ctrlmap := control.CreateControlMap(s)
-
-	emptyMap := make(secure.ActionMap)
-	ctrlmap.Add("/subscribe", emptyMap)
-	ctrlmap.Add("/login", emptyMap)
-	ctrlmap.Add("/register", emptyMap)
-	ctrlmap.Add("/forgot", emptyMap)
-
-	beego.InsertFilter("/*", beego.BeforeRouter, ctrlmap.FilterUI)
-
-	return ctrlmap
-}
-*/
