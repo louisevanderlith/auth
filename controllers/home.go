@@ -6,9 +6,6 @@ import (
 	"github.com/louisevanderlith/droxolite/context"
 )
 
-type Home struct {
-}
-
-func (r *Home) Default(ctx context.Contexer) (int, interface{}) {
+func Index(ctx context.Requester) (int, interface{}) {
 	return http.StatusOK, nil
 }

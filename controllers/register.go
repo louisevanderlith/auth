@@ -13,8 +13,6 @@ type Register struct {
 // @Description Gets the form a user must fill in to register
 // @Success 200 {string} string
 // @router / [get]
-func (req *Register) Default(ctx context.Contexer) (int, interface{}) {
-	//req.Setup("register", "Registration", true)
-
+func (req *Register) Get(ctx context.Requester) (int, interface{}) {
 	return http.StatusOK, nil
 }

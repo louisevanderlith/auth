@@ -13,8 +13,6 @@ type Subscribe struct {
 // @Description Gets the form a user must fill in to allow a service
 // @Success 200 {string} string
 // @router / [get]
-func (req *Subscribe) Default(ctx context.Contexer) (int, interface{}) {
-	//req.Setup("subscribe", "Subscribe", false)
-
+func (req *Subscribe) Get(ctx context.Requester) (int, interface{}) {
 	return http.StatusOK, nil
 }

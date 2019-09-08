@@ -20,8 +20,6 @@ func (req *Login) AcceptsQuery() map[string]string {
 // @Description Gets the form a user must fill in to login
 // @Success 200 {string} string
 // @router / [get]
-func (req *Login) Default(ctx context.Contexer) (int, interface{}) {
-	//req.Setup("login", "Login", true)
-
+func (req *Login) Get(ctx context.Requester) (int, interface{}) {
 	return http.StatusOK, nil
 }
