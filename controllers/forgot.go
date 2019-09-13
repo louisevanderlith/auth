@@ -1,26 +1,20 @@
 package controllers
 
 import (
-	"github.com/louisevanderlith/mango"
-	"github.com/louisevanderlith/mango/control"
+	"net/http"
+
+	"github.com/louisevanderlith/droxolite/context"
 )
 
-type ForgotController struct {
-	control.UIController
-}
-
-func NewForgotCtrl(ctrlMap *control.ControllerMap, setting mango.ThemeSetting) *ForgotController {
-	result := &ForgotController{}
-	result.SetTheme(setting)
-	result.SetInstanceMap(ctrlMap)
-
-	return result
+type Forgot struct {
 }
 
 // @Title GetForgotPage
 // @Description Gets the form a user must fill in to reset their password
 // @Success 200 {string} string
 // @router /:forgotKey [get]
-func (req *ForgotController) Get() {
-	req.Setup("forgot", "Forgot Password", true)
+func (req *Forgot) Get(ctx context.Requester) (int, interface{}) {
+	//req.Setup("forgot", "Forgot Password", true)
+
+	return http.StatusOK, nil
 }

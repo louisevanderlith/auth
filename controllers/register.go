@@ -1,26 +1,18 @@
 package controllers
 
 import (
-	"github.com/louisevanderlith/mango"
-	"github.com/louisevanderlith/mango/control"
+	"net/http"
+
+	"github.com/louisevanderlith/droxolite/context"
 )
 
-type RegisterController struct {
-	control.UIController
-}
-
-func NewRegisterCtrl(ctrlMap *control.ControllerMap, setting mango.ThemeSetting) *RegisterController {
-	result := &RegisterController{}
-	result.SetTheme(setting)
-	result.SetInstanceMap(ctrlMap)
-
-	return result
+type Register struct {
 }
 
 // @Title GetRegisterPage
 // @Description Gets the form a user must fill in to register
 // @Success 200 {string} string
 // @router / [get]
-func (req *RegisterController) Get() {
-	req.Setup("register", "Registration", true)
+func (req *Register) Get(ctx context.Requester) (int, interface{}) {
+	return http.StatusOK, nil
 }

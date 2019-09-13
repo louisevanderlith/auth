@@ -1,26 +1,25 @@
 package controllers
 
 import (
-	"github.com/louisevanderlith/mango"
-	"github.com/louisevanderlith/mango/control"
+	"net/http"
+
+	"github.com/louisevanderlith/droxolite/context"
 )
 
-type LoginController struct {
-	control.UIController
+type Login struct {
 }
 
-func NewLoginCtrl(ctrlMap *control.ControllerMap, setting mango.ThemeSetting) *LoginController {
-	result := &LoginController{}
-	result.SetTheme(setting)
-	result.SetInstanceMap(ctrlMap)
+func (req *Login) AcceptsQuery() map[string]string {
+	q := make(map[string]string)
+	q["return"] = "{return}"
 
-	return result
+	return q
 }
 
 // @Title GetLoginPage
 // @Description Gets the form a user must fill in to login
 // @Success 200 {string} string
 // @router / [get]
-func (req *LoginController) Get() {
-	req.Setup("login", "Login", true)
+func (req *Login) Get(ctx context.Requester) (int, interface{}) {
+	return http.StatusOK, nil
 }

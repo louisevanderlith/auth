@@ -2,8 +2,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:html';
 import 'app.dart';
-import 'formstate.dart';
-import 'pathlookup.dart';
+import 'package:mango_ui/formstate.dart';
+import 'package:mango_ui/pathlookup.dart';
 
 class RegisterForm extends FormState {
   TextInputElement _name;

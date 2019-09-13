@@ -1,41 +1,77 @@
 package main
 
 import (
-	"log"
 	"os"
 	"path"
 
+	"github.com/louisevanderlith/auth/controllers"
 	"github.com/louisevanderlith/auth/routers"
-	"github.com/louisevanderlith/mango"
-	"github.com/louisevanderlith/mango/enums"
-
-	"github.com/astaxie/beego"
+	"github.com/louisevanderlith/droxolite"
+	"github.com/louisevanderlith/droxolite/bodies"
+	"github.com/louisevanderlith/droxolite/do"
+	"github.com/louisevanderlith/droxolite/element"
+	"github.com/louisevanderlith/droxolite/resins"
+	"github.com/louisevanderlith/droxolite/servicetype"
 )
 
 func main() {
 	keyPath := os.Getenv("KEYPATH")
 	pubName := os.Getenv("PUBLICKEY")
+	host := os.Getenv("HOST")
+	profile := os.Getenv("PROFILE")
 	pubPath := path.Join(keyPath, pubName)
 
-	// Register with router
-	appName := beego.BConfig.AppName
-	srv := mango.NewService(appName, pubPath, enums.APP)
-
-	port := beego.AppConfig.String("httpport")
-	err := srv.Register(port)
+	conf, err := droxolite.LoadConfig()
 
 	if err != nil {
-		log.Print("Register: ", err)
-	} else {
-		err = mango.UpdateTheme(srv.ID)
+		panic(err)
+	}
 
-		if err != nil {
-			panic(err)
-		}
+	// Register with router
+	srv := bodies.NewService(conf.Appname, pubPath, conf.HTTPPort, servicetype.APP)
 
-		routers.Setup(srv)
+	routr, err := do.GetServiceURL("", "Router.API", false)
 
-		beego.SetStaticPath("/dist", "dist")
-		beego.Run()
+	if err != nil {
+		panic(err)
+	}
+
+	err = srv.Register(routr)
+
+	if err != nil {
+		panic(err)
+	}
+
+	err = droxolite.UpdateTheme(srv.ID)
+
+	if err != nil {
+		panic(err)
+	}
+
+	thm, err := element.GetDefaultTheme(host, srv.ID, profile)
+
+	if err != nil {
+		panic(err)
+	}
+
+	secur, err := do.GetServiceURL(srv.ID, "Auth.APP", true)
+
+	if err != nil {
+		panic(err)
+	}
+
+	err = thm.LoadTemplate("./views", "master.html")
+
+	if err != nil {
+		panic(err)
+	}
+
+	poxy := resins.NewColourEpoxy(srv, thm, secur, controllers.Index)
+	routers.Setup(poxy)
+
+	err = droxolite.Boot(poxy)
+
+	if err != nil {
+		panic(err)
 	}
 }

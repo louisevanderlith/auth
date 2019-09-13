@@ -1,8 +1,9 @@
 import 'dart:convert';
 import 'dart:html';
-import 'package:Auth.APP/secureapi.dart';
+import 'package:mango_ui/bodies/login.dart';
+import 'package:mango_ui/services/secureapi.dart';
 
-import 'formstate.dart';
+import 'package:mango_ui/formstate.dart';
 import 'app.dart';
 
 class LoginForm extends FormState {
@@ -33,7 +34,8 @@ class LoginForm extends FormState {
       disableSubmit(true);
 
       final app = await getApp();
-      var result = await sendLogin(app, email, password);
+      final data = new Login(app, email, password);
+      var result = await sendLogin(data);
       var obj = jsonDecode(result.response);
 
       if (result.status == 200) {
