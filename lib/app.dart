@@ -5,7 +5,7 @@ import 'dart:html';
 import 'package:mango_ui/bodies/app.dart';
 
 Future<App> getApp() async {
-  identifyLocation();
+  await identifyLocation();
 
   var appUrl = window.localStorage['return'];
   var ip = await getIP();
@@ -15,17 +15,11 @@ Future<App> getApp() async {
   return new App(appUrl, ip, location, instanceElem.value);
 }
 
+//geolocation only works on HTTPS
 void identifyLocation() {
   if (window.navigator != null) {
-    window.navigator.geolocation
-        .getCurrentPosition(enableHighAccuracy: true)
-        .then((Geoposition position) {
-      var location =
-          '${position.coords.latitude}, ${position.coords.longitude}';
-      window.localStorage['location'] = location;
-    }).catchError((err) {
-      print('Position Error: ${err.error}');
-    });
+    final geo = window.navigator.geolocation;
+    geo.getCurrentPosition(maximumAge: new Duration(hours: 8), timeout: new Duration(seconds: 10)).then(storeLocation, onError: locationFailed);
   }
 }
 
@@ -33,4 +27,13 @@ Future<String> getIP() async {
   var resp = await HttpRequest.getString('https://jsonip.com');
 
   return jsonDecode(resp)["ip"];
+}
+
+void storeLocation(position) {
+ window.localStorage['location'] =
+          '${position.coords.latitude}, ${position.coords.longitude}';
+}
+
+void locationFailed(err){
+  print('Position Error: ${err.error} ${err.code}');
 }
