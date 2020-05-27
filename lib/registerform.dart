@@ -4,6 +4,8 @@ import 'dart:html';
 import 'app.dart';
 import 'package:mango_ui/formstate.dart';
 import 'package:mango_ui/pathlookup.dart';
+import 'package:mango_ui/bodies/register.dart';
+import 'package:mango_ui/services/secureapi.dart';
 
 class RegisterForm extends FormState {
   TextInputElement _name;
@@ -48,18 +50,10 @@ class RegisterForm extends FormState {
   }
 
   Future submitSend() async {
-    var url = await buildPath("Secure.API", "register", new List<String>());
-    var data = jsonEncode({
-      "App": getApp(),
-      "Name": name,
-      "Email": email,
-      "Password": password,
-      "PasswordRepeat": confirmPassword
-    });
+    var data = new Register(await getApp(), name, email, password, confirmPassword);
+    var result = await sendRegister(data);
 
-    var req = await HttpRequest.request(url, method: "POST", sendData: data);
-
-    var obj = jsonDecode(req.response);
+    var obj = jsonDecode(result.response);
 
     print(obj['Data']);
     afterSend(obj['Data']);
