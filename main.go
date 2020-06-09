@@ -23,13 +23,13 @@ func main() {
 		panic(err)
 	}
 
-	clms, err := kong.Exchange(tkn, *clientId, *clientSecrt, *authrty+"/info")
+	clms, err := kong.Exchange(http.DefaultClient, tkn, *clientId, *clientSecrt, *authrty+"/info")
 
 	if err != nil {
 		panic(err)
 	}
 
-	err = droxolite.UpdateTemplate(clms)
+	err = droxolite.UpdateTemplate(tkn, clms)
 
 	if err != nil {
 		panic(err)
@@ -38,8 +38,8 @@ func main() {
 	srvr := &http.Server{
 		ReadTimeout:  time.Second * 15,
 		WriteTimeout: time.Second * 15,
-		Addr:         ":8084",
-		Handler:      handles.SetupRoutes(),
+		Addr:         ":8094",
+		Handler:      handles.SetupRoutes(*clientId, *clientSecrt, *authrty),
 	}
 
 	err = srvr.ListenAndServe()

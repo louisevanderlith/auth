@@ -14,7 +14,7 @@ var (
 	Security     kong.Securer
 )
 
-func SetupRoutes() http.Handler {
+func SetupRoutes(clnt, scrt, secureUrl string) http.Handler {
 	stor := sessions.NewCookieStore(
 		securecookie.GenerateRandomKey(64),
 		securecookie.GenerateRandomKey(32),
@@ -34,9 +34,9 @@ func SetupRoutes() http.Handler {
 	r := mux.NewRouter()
 	r.Queries("client", "{client}", "callback", "{callback}")
 
-	r.HandleFunc("/login", LoginGET(mstr, tmpl)).Methods(http.MethodGet)
+	r.HandleFunc("/login", kong.ClientMiddleware(http.DefaultClient, clnt, scrt, secureUrl, "", LoginGET(mstr, tmpl))).Methods(http.MethodGet)
 	r.HandleFunc("/login", LoginPOST).Methods(http.MethodPost)
-	r.HandleFunc("/consent", ConsentGET(mstr, tmpl)).Methods(http.MethodGet)
+	r.HandleFunc("/consent", kong.ClientMiddleware(http.DefaultClient, clnt, scrt, secureUrl, "", ConsentGET(mstr, tmpl))).Methods(http.MethodGet)
 	r.HandleFunc("/consent", ConsentPOST).Methods(http.MethodPost)
 
 	return r

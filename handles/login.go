@@ -17,7 +17,11 @@ func LoginGET(mstr *template.Template, tmpl *template.Template) http.HandlerFunc
 
 		mxr := mix.Page("Login", nil, ctx.GetTokenInfo(), mstr, tmpl)
 
-		ctx.Serve(http.StatusOK, mxr)
+		err := ctx.Serve(http.StatusOK, mxr)
+
+		if err != nil {
+			log.Println(err)
+		}
 	}
 }
 

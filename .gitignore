@@ -21,4 +21,7 @@ build
 pubspec.lock
 .packages
 
+db/*.husk
+!db/*.seed.json
+
 .idea
