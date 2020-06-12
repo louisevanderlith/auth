@@ -1,7 +1,8 @@
 import 'dart:convert';
 import 'dart:html';
+
+import 'package:mango_secure/secureapi.dart';
 import 'package:mango_ui/formstate.dart';
-import 'package:mango_ui/services/secureapi.dart';
 
 class ForgotForm extends FormState {
   EmailInputElement _identity;

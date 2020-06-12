@@ -1,11 +1,7 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:html';
-import 'app.dart';
+
 import 'package:mango_ui/formstate.dart';
-import 'package:mango_ui/pathlookup.dart';
-import 'package:mango_ui/bodies/register.dart';
-import 'package:mango_ui/services/secureapi.dart';
 
 class RegisterForm extends FormState {
   TextInputElement _name;
@@ -50,13 +46,13 @@ class RegisterForm extends FormState {
   }
 
   Future submitSend() async {
-    var data = new Register(await getApp(), name, email, password, confirmPassword);
+    /*var data = new Register(name, email, password, confirmPassword);
     var result = await sendRegister(data);
 
     var obj = jsonDecode(result.response);
 
     print(obj['Data']);
-    afterSend(obj['Data']);
+    afterSend(obj['Data']);*/
   }
 
   bool passwordsMatch() {
