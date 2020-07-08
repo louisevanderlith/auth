@@ -11,11 +11,12 @@ import (
 	"net/http"
 )
 
-func LoginGET(mstr *template.Template, tmpl *template.Template) http.HandlerFunc {
+func LoginGET(tmpl *template.Template) http.HandlerFunc {
+	pge := mix.PreparePage(tmpl, "Login", "./views/login.html")
 	return func(w http.ResponseWriter, r *http.Request) {
 		ctx := context.New(w, r)
 
-		mxr := mix.Page("Login", nil, ctx.GetTokenInfo(), mstr, tmpl)
+		mxr := pge.Page(nil, ctx.GetTokenInfo(), ctx.GetToken())
 
 		err := ctx.Serve(http.StatusOK, mxr)
 
@@ -69,5 +70,5 @@ func LoginPOST(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	http.Redirect(w, r, fmt.Sprintf("/consent?client=%s&callback=%s",clnts[0], cbUrls[0]), http.StatusFound)
+	http.Redirect(w, r, fmt.Sprintf("/consent?client=%s&callback=%s", clnts[0], cbUrls[0]), http.StatusFound)
 }

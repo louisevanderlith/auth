@@ -25,7 +25,7 @@ func SetupRoutes(clnt, scrt, secureUrl string) http.Handler {
 
 	SessionStore = stor
 
-	mstr, tmpl, err := droxolite.LoadTemplate("./views", "master.html")
+	tmpl, err := droxolite.LoadTemplate("./views")
 
 	if err != nil {
 		panic(err)
@@ -34,9 +34,10 @@ func SetupRoutes(clnt, scrt, secureUrl string) http.Handler {
 	r := mux.NewRouter()
 	r.Queries("client", "{client}", "callback", "{callback}")
 
-	r.HandleFunc("/login", kong.ClientMiddleware(http.DefaultClient, clnt, scrt, secureUrl, "", LoginGET(mstr, tmpl))).Methods(http.MethodGet)
+	r.HandleFunc("/", kong.ClientMiddleware(http.DefaultClient, clnt, scrt, secureUrl, "", Index(tmpl))).Methods(http.MethodGet)
+	r.HandleFunc("/login", kong.ClientMiddleware(http.DefaultClient, clnt, scrt, secureUrl, "", LoginGET(tmpl))).Methods(http.MethodGet)
 	r.HandleFunc("/login", LoginPOST).Methods(http.MethodPost)
-	r.HandleFunc("/consent", kong.ClientMiddleware(http.DefaultClient, clnt, scrt, secureUrl, "", ConsentGET(mstr, tmpl))).Methods(http.MethodGet)
+	r.HandleFunc("/consent", kong.ClientMiddleware(http.DefaultClient, clnt, scrt, secureUrl, "", ConsentGET(tmpl))).Methods(http.MethodGet)
 	r.HandleFunc("/consent", ConsentPOST).Methods(http.MethodPost)
 
 	return r

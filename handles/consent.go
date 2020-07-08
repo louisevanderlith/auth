@@ -11,7 +11,8 @@ import (
 	"net/http"
 )
 
-func ConsentGET(mstr *template.Template, tmpl *template.Template) http.HandlerFunc {
+func ConsentGET(tmpl *template.Template) http.HandlerFunc {
+	pge := mix.PreparePage(tmpl, "Consent", "./views/consent.html")
 	return func(w http.ResponseWriter, r *http.Request) {
 		sessn, err := SessionStore.Get(r, "partial")
 
@@ -64,7 +65,8 @@ func ConsentGET(mstr *template.Template, tmpl *template.Template) http.HandlerFu
 			Username: user,
 			Concern:  concern,
 		}
-		mxr := mix.Page("Consent", result, ctx.GetTokenInfo(), mstr, tmpl)
+
+		mxr := pge.Page(result, ctx.GetTokenInfo(), ctx.GetToken())
 
 		err = ctx.Serve(http.StatusOK, mxr)
 
