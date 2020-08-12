@@ -1,31 +1,24 @@
 package handles
 
 import (
-	"fmt"
-	"github.com/louisevanderlith/droxolite/context"
 	"github.com/louisevanderlith/droxolite/mix"
-	"github.com/louisevanderlith/kong/prime"
-	"github.com/louisevanderlith/kong/samples/servers/auth"
 	"html/template"
 	"log"
 	"net/http"
 )
 
 func LoginGET(tmpl *template.Template) http.HandlerFunc {
-	pge := mix.PreparePage(tmpl, "Login", "./views/login.html")
+	pge := mix.PreparePage("Login", tmpl, "./views/login.html")
 	return func(w http.ResponseWriter, r *http.Request) {
-		ctx := context.New(w, r)
-
-		mxr := pge.Page(nil, ctx.GetTokenInfo(), ctx.GetToken())
-
-		err := ctx.Serve(http.StatusOK, mxr)
+		err := mix.Write(w, pge.Create(r, nil))
 
 		if err != nil {
-			log.Println(err)
+			log.Println("Serve Error", err)
 		}
 	}
 }
 
+/*
 func LoginPOST(w http.ResponseWriter, r *http.Request) {
 	clnts := r.URL.Query()["client"]
 
@@ -72,3 +65,4 @@ func LoginPOST(w http.ResponseWriter, r *http.Request) {
 
 	http.Redirect(w, r, fmt.Sprintf("/consent?client=%s&callback=%s", clnts[0], cbUrls[0]), http.StatusFound)
 }
+*/

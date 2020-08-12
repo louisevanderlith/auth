@@ -4,17 +4,17 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/gorilla/securecookie"
 	"github.com/gorilla/sessions"
-	"github.com/louisevanderlith/droxolite"
+	"github.com/louisevanderlith/droxolite/drx"
 	"github.com/louisevanderlith/kong"
 	"net/http"
 )
 
 var (
 	SessionStore sessions.Store
-	Security     kong.Securer
+	Authority    kong.Authority
 )
 
-func SetupRoutes(clnt, scrt, secureUrl string) http.Handler {
+func SetupRoutes(clnt, scrt, securityUrl string) http.Handler {
 	stor := sessions.NewCookieStore(
 		securecookie.GenerateRandomKey(64),
 		securecookie.GenerateRandomKey(32),
@@ -25,7 +25,7 @@ func SetupRoutes(clnt, scrt, secureUrl string) http.Handler {
 
 	SessionStore = stor
 
-	tmpl, err := droxolite.LoadTemplate("./views")
+	tmpl, err := drx.LoadTemplate("./views")
 
 	if err != nil {
 		panic(err)
@@ -34,11 +34,11 @@ func SetupRoutes(clnt, scrt, secureUrl string) http.Handler {
 	r := mux.NewRouter()
 	r.Queries("client", "{client}", "callback", "{callback}")
 
-	r.HandleFunc("/", kong.ClientMiddleware(http.DefaultClient, clnt, scrt, secureUrl, "", Index(tmpl))).Methods(http.MethodGet)
-	r.HandleFunc("/login", kong.ClientMiddleware(http.DefaultClient, clnt, scrt, secureUrl, "", LoginGET(tmpl))).Methods(http.MethodGet)
-	r.HandleFunc("/login", LoginPOST).Methods(http.MethodPost)
-	r.HandleFunc("/consent", kong.ClientMiddleware(http.DefaultClient, clnt, scrt, secureUrl, "", ConsentGET(tmpl))).Methods(http.MethodGet)
-	r.HandleFunc("/consent", ConsentPOST).Methods(http.MethodPost)
+	r.HandleFunc("/", kong.ClientMiddleware(http.DefaultClient, clnt, scrt, securityUrl, "", Index(tmpl), make(map[string]bool))).Methods(http.MethodGet)
+	r.HandleFunc("/login", kong.ClientMiddleware(http.DefaultClient, clnt, scrt, securityUrl, "", LoginGET(tmpl), make(map[string]bool))).Methods(http.MethodGet)
+	//r.HandleFunc("/login", LoginPOST).Methods(http.MethodPost)
+	r.HandleFunc("/consent", kong.ClientMiddleware(http.DefaultClient, clnt, scrt, securityUrl, "", ConsentGET(tmpl), make(map[string]bool))).Methods(http.MethodGet)
+	//r.HandleFunc("/consent", ConsentPOST).Methods(http.MethodPost)
 
 	return r
 }

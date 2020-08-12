@@ -1,23 +1,20 @@
 package handles
 
 import (
-	"fmt"
-	"github.com/louisevanderlith/droxolite/context"
 	"github.com/louisevanderlith/droxolite/mix"
 	"github.com/louisevanderlith/kong/prime"
-	"github.com/louisevanderlith/kong/samples/servers/auth"
 	"html/template"
 	"log"
 	"net/http"
 )
 
 func ConsentGET(tmpl *template.Template) http.HandlerFunc {
-	pge := mix.PreparePage(tmpl, "Consent", "./views/consent.html")
+	pge := mix.PreparePage("Consent", tmpl, "./views/consent.html")
 	return func(w http.ResponseWriter, r *http.Request) {
 		sessn, err := SessionStore.Get(r, "partial")
 
 		if err != nil {
-			log.Println(err)
+			log.Println("Session Error", err)
 			http.Redirect(w, r, "/login", http.StatusFound)
 			return
 		}
@@ -25,19 +22,17 @@ func ConsentGET(tmpl *template.Template) http.HandlerFunc {
 		ut, ok := sessn.Values["user.token"]
 
 		if !ok {
-			log.Println(err)
 			http.Redirect(w, r, "/login", http.StatusFound)
 			return
 		}
 
-		req := prime.QueryRequest{Partial: ut.(string)}
+		req := prime.QueryRequest{Token: ut.(string)}
 
-		user, concern, err := Security.ClientQuery(req)
+		user, concern, err := Authority.ClientQuery(req)
 
 		if err != nil {
-			log.Println(err)
-			w.WriteHeader(http.StatusInternalServerError)
-			w.Write(nil)
+			log.Println("Client Query Error", err)
+			http.Error(w, "", http.StatusInternalServerError)
 			return
 		}
 
@@ -55,7 +50,6 @@ func ConsentGET(tmpl *template.Template) http.HandlerFunc {
 			return
 		}
 
-		ctx := context.New(w, r)
 		result := struct {
 			ID       string
 			Username string
@@ -66,16 +60,15 @@ func ConsentGET(tmpl *template.Template) http.HandlerFunc {
 			Concern:  concern,
 		}
 
-		mxr := pge.Page(result, ctx.GetTokenInfo(), ctx.GetToken())
-
-		err = ctx.Serve(http.StatusOK, mxr)
+		err = mix.Write(w, pge.Create(r, result))
 
 		if err != nil {
-			log.Println(err)
+			log.Println("Serve Error", err)
 		}
 	}
 }
 
+/*
 func ConsentPOST(w http.ResponseWriter, r *http.Request) {
 	clnts := r.URL.Query()["client"]
 
@@ -119,4 +112,9 @@ func ConsentPOST(w http.ResponseWriter, r *http.Request) {
 	}
 
 	http.Redirect(w, r, fmt.Sprintf("%s?ut=%s", cbUrls[0], tkn), http.StatusFound)
-}
+}*/
+
+/*
+
+
+ */
