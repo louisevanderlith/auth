@@ -10,4 +10,4 @@ dev_dependencies:
   build_web_compilers:
 dependencies:
   mango_ui: '^1.0.3'
-  mango_secure: '^1.0.1'
+  mango_secure: '^1.0.5'
