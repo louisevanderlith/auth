@@ -7,8 +7,11 @@
                     <h3 class="title has-text-grey">Login</h3>
                     <p class="subtitle has-text-grey">Please login to proceed.</p>
                     <div class="box">
-                        <form id="frmLogin" role="form">
+                        <form id="frmLogin" role="form" data-toggle="validator">
+                            <input type="hidden" id="hdnState" value="{{.Data.State}}"/>
+                            <input type="hidden" id="hdnClient" value="{{.Data.Client}}"/>
                             <div class="field">
+                                <label for="txtIdentity" class="label colorA">Username</label>
                                 <div class="control">
                                     <input class="input is-large" id="txtIdentity" required minlength="3" type="email"
                                            placeholder="Email" autofocus="" autocorrect="off" autocapitalize="off">
@@ -17,6 +20,7 @@
                             </div>
 
                             <div class="field">
+                                <label for="txtPassword" class="label colorA">Password</label>
                                 <div class="control">
                                     <input class="input is-large" id="txtPassword" required type="password"
                                            placeholder="Password" autocomplete="off" autocorrect="off"
@@ -24,9 +28,9 @@
                                     <p class="help is-danger"></p>
                                 </div>
                             </div>
-                            <button id="btnLogin" class="button is-block is-success is-large is-fullwidth">Login
+                            <button id="btnSubmit" type="button"
+                                    class="button is-block is-success is-large is-fullwidth">Login
                             </button>
-                            <p id="frmError" class="help is-danger"></p>
                         </form>
                     </div>
                     <p class="has-text-grey">

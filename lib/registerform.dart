@@ -1,6 +1,10 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:html';
 
+import 'package:dart_toast/dart_toast.dart';
+import 'package:mango_entity/bodies/register.dart';
+import 'package:mango_entity/secureapi.dart';
 import 'package:mango_ui/formstate.dart';
 
 class RegisterForm extends FormState {
@@ -46,13 +50,26 @@ class RegisterForm extends FormState {
   }
 
   Future submitSend() async {
-    /*var data = new Register(name, email, password, confirmPassword);
-    var result = await sendRegister(data);
+    var data = new Register(name, email, password, confirmPassword);
+    var req = await sendRegister(data);
 
-    var obj = jsonDecode(result.response);
+    var obj = jsonDecode(req.response);
 
     print(obj['Data']);
-    afterSend(obj['Data']);*/
+    afterSend(obj['Data']);
+
+    if (req.status == 200) {
+      new Toast.success(
+          title: "Success!",
+          message: req.response,
+          position: ToastPos.bottomLeft);
+      super.form.reset();
+    } else {
+      new Toast.error(
+          title: "Error!",
+          message: req.response,
+          position: ToastPos.bottomLeft);
+    }
   }
 
   bool passwordsMatch() {

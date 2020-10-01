@@ -1,17 +1,16 @@
 import 'dart:convert';
 import 'dart:html';
 
-import 'package:mango_secure/secureapi.dart';
+import 'package:dart_toast/dart_toast.dart';
+import 'package:mango_entity/secureapi.dart';
 import 'package:mango_ui/formstate.dart';
 
 class ForgotForm extends FormState {
   EmailInputElement _identity;
-  ParagraphElement _error;
 
   ForgotForm(String idElem, String identityElem, String submitBtn)
       : super(idElem, submitBtn) {
     _identity = querySelector(identityElem);
-    _error = querySelector("${idElem}Err");
 
     querySelector(submitBtn).onClick.listen(onSend);
   }
@@ -24,14 +23,18 @@ class ForgotForm extends FormState {
     if (isFormValid()) {
       disableSubmit(true);
 
-      var result = await sendForgot(identity);
-      var obj = jsonDecode(result.response);
+      var req = await sendForgot(identity);
+      var obj = jsonDecode(req.response);
 
-      if (result.status == 200) {
-        final fkey = obj['Data'];
-        print(fkey);
+      if (req.status == 200) {
+        new Toast.success(
+            title: "Success!", message: obj, position: ToastPos.bottomLeft);
+        super.form.reset();
       } else {
-        _error.text = obj['Error'];
+        new Toast.error(
+            title: "Error!",
+            message: req.response,
+            position: ToastPos.bottomLeft);
       }
     }
   }

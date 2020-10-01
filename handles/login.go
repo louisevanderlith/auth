@@ -1,6 +1,7 @@
 package handles
 
 import (
+	"github.com/louisevanderlith/droxolite/drx"
 	"github.com/louisevanderlith/droxolite/mix"
 	"html/template"
 	"log"
@@ -9,8 +10,30 @@ import (
 
 func LoginGET(tmpl *template.Template) http.HandlerFunc {
 	pge := mix.PreparePage("Login", tmpl, "./views/login.html")
+	pge.AddMenu(FullMenu())
 	return func(w http.ResponseWriter, r *http.Request) {
-		err := mix.Write(w, pge.Create(r, nil))
+		client := drx.FindQueryParam(r, "client")
+
+		if len(client) == 0 {
+			log.Println("no 'client' query")
+			http.Error(w, "", http.StatusBadRequest)
+			return
+		}
+
+		state := drx.FindQueryParam(r, "state")
+
+		if len(client) == 0 {
+			log.Println("no 'state' query")
+			http.Error(w, "", http.StatusBadRequest)
+			return
+		}
+
+		obj := struct {
+			State  string
+			Client string
+		}{state, client}
+
+		err := mix.Write(w, pge.Create(r, obj))
 
 		if err != nil {
 			log.Println("Serve Error", err)

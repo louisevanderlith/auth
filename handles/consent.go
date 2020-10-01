@@ -1,8 +1,9 @@
 package handles
 
 import (
+	"fmt"
+	"github.com/louisevanderlith/droxolite/drx"
 	"github.com/louisevanderlith/droxolite/mix"
-	"github.com/louisevanderlith/kong/prime"
 	"html/template"
 	"log"
 	"net/http"
@@ -10,25 +11,81 @@ import (
 
 func ConsentGET(tmpl *template.Template) http.HandlerFunc {
 	pge := mix.PreparePage("Consent", tmpl, "./views/consent.html")
+	pge.AddMenu(FullMenu())
 	return func(w http.ResponseWriter, r *http.Request) {
-		sessn, err := SessionStore.Get(r, "partial")
+		cbUrl := drx.FindQueryParam(r, "callback")
+
+		if len(cbUrl) == 0 {
+			http.Error(w, "no callback query", http.StatusBadRequest)
+			return
+		}
+
+		state := drx.FindQueryParam(r, "state")
+
+		if len(state) == 0 {
+			log.Println("no 'state' query")
+			http.Error(w, "", http.StatusBadRequest)
+			return
+		}
+
+		client := drx.FindQueryParam(r, "client")
+
+		if len(client) == 0 {
+			log.Println("no 'client' query")
+			http.Error(w, "", http.StatusBadRequest)
+			return
+		}
+
+		sessn, err := SessionStore.New(r, "partial")
 
 		if err != nil {
-			log.Println("Session Error", err)
-			http.Redirect(w, r, "/login", http.StatusFound)
+			log.Println("New Session Error", err)
+			http.Error(w, "", http.StatusInternalServerError)
 			return
 		}
 
-		ut, ok := sessn.Values["user.token"]
+		sessn.Values[state] = cbUrl
 
-		if !ok {
-			http.Redirect(w, r, "/login", http.StatusFound)
+		err = sessn.Save(r, w)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 
-		req := prime.QueryRequest{Token: ut.(string)}
+		loginUrl := fmt.Sprintf("/login?state=%s&client=%s", state, client)
+		http.Redirect(w, r, loginUrl, http.StatusFound)
+	}
+}
 
-		user, concern, err := Authority.ClientQuery(req)
+func ConsentUserGET(tmpl *template.Template) http.HandlerFunc {
+	pge := mix.PreparePage("Consent", tmpl, "./views/consent.html")
+	pge.AddMenu(FullMenu())
+	return func(w http.ResponseWriter, r *http.Request) {
+		partial := drx.FindQueryParam(r, "partial")
+
+		if len(partial) == 0 {
+			log.Println("no 'partial' query")
+			http.Error(w, "", http.StatusBadRequest)
+			return
+		}
+
+		state := drx.FindQueryParam(r, "state")
+
+		if len(state) == 0 {
+			log.Println("no 'state' query")
+			http.Error(w, "", http.StatusBadRequest)
+			return
+		}
+
+		client := drx.FindQueryParam(r, "client")
+
+		if len(client) == 0 {
+			log.Println("no 'client' query")
+			http.Error(w, "", http.StatusBadRequest)
+			return
+		}
+
+		concern, err := Authority.ClientQuery(client)
 
 		if err != nil {
 			log.Println("Client Query Error", err)
@@ -36,27 +93,30 @@ func ConsentGET(tmpl *template.Template) http.HandlerFunc {
 			return
 		}
 
-		clnts := r.URL.Query()["client"]
+		sessn, err := SessionStore.Get(r, "partial")
 
-		if len(clnts) == 0 {
-			http.Error(w, "no client query", http.StatusBadRequest)
+		if err != nil {
+			log.Println("Invalid Session Error", err)
+			http.Error(w, "", http.StatusInternalServerError)
 			return
 		}
 
-		cbUrls := r.URL.Query()["callback"]
+		cbUrl := sessn.Values[state]
 
-		if len(cbUrls) == 0 {
-			http.Error(w, "no callback query", http.StatusBadRequest)
+		if len(cbUrl.(string)) == 0 {
+			http.Error(w, "no callback found", http.StatusBadRequest)
 			return
 		}
 
 		result := struct {
 			ID       string
 			Username string
+			Callback string
 			Concern  map[string][]string
 		}{
-			ID:       clnts[0],
-			Username: user,
+			ID:       client,
+			Username: "Userx",
+			Callback: cbUrl.(string),
 			Concern:  concern,
 		}
 
@@ -67,54 +127,3 @@ func ConsentGET(tmpl *template.Template) http.HandlerFunc {
 		}
 	}
 }
-
-/*
-func ConsentPOST(w http.ResponseWriter, r *http.Request) {
-	clnts := r.URL.Query()["client"]
-
-	if len(clnts) == 0 {
-		http.Error(w, "no client query", http.StatusBadRequest)
-		return
-	}
-
-	cbUrls := r.URL.Query()["callback"]
-
-	if len(cbUrls) == 0 {
-		http.Error(w, "no callback query", http.StatusBadRequest)
-		return
-	}
-
-	session, err := SessionStore.Get(r, "partial")
-
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	ut := session.Values["user.token"]
-
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	obj := prime.ConsentRequest{
-		User:   ut.(string),
-		Claims: r.Form["consent"],
-	}
-
-	tkn, err := auth.Security.GiveConsent(obj)
-
-	if err != nil {
-		log.Println(err)
-		//Show consent again
-		return
-	}
-
-	http.Redirect(w, r, fmt.Sprintf("%s?ut=%s", cbUrls[0], tkn), http.StatusFound)
-}*/
-
-/*
-
-
- */
