@@ -36,7 +36,7 @@ func ConsentGET(tmpl *template.Template) http.HandlerFunc {
 			return
 		}
 
-		sessn, err := SessionStore.New(r, "partial")
+		sessn, err := SessionStore.Get(r, "partial")
 
 		if err != nil {
 			log.Println("New Session Error", err)
@@ -85,7 +85,7 @@ func ConsentUserGET(tmpl *template.Template) http.HandlerFunc {
 			return
 		}
 
-		concern, err := Authority.ClientQuery(client)
+		cc, err := Authority.ClientQuery(client)
 
 		if err != nil {
 			log.Println("Client Query Error", err)
@@ -114,10 +114,10 @@ func ConsentUserGET(tmpl *template.Template) http.HandlerFunc {
 			Callback string
 			Concern  map[string][]string
 		}{
-			ID:       client,
+			ID:       cc.Client,
 			Username: "Userx",
 			Callback: cbUrl.(string),
-			Concern:  concern,
+			Concern:  cc.Needs,
 		}
 
 		err = mix.Write(w, pge.Create(r, result))

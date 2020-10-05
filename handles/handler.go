@@ -31,22 +31,12 @@ func SetupRoutes(clnt, scrt, securityUrl, managerUrl string) http.Handler {
 		securecookie.GenerateRandomKey(64),
 		securecookie.GenerateRandomKey(32),
 	)
-
 	//stor.Options.Secure = true
 	stor.Options.HttpOnly = true
 
 	SessionStore = stor
-	scps := map[string]bool{
-		"secure.client.query": true,
-	}
 
-	token, err := middle.FetchToken(http.DefaultClient, securityUrl, clnt, scrt, "", scps)
-
-	if err != nil {
-		panic(err)
-	}
-
-	Authority = kong.NewAuthority(http.DefaultClient, securityUrl, managerUrl, token)
+	Authority = kong.NewAuthority(http.DefaultClient, securityUrl, managerUrl, clnt, scrt)
 
 	tmpl, err := drx.LoadTemplate("./views")
 
@@ -60,7 +50,7 @@ func SetupRoutes(clnt, scrt, securityUrl, managerUrl string) http.Handler {
 	fs := http.FileServer(distPath)
 	r.PathPrefix("/dist/").Handler(http.StripPrefix("/dist/", fs))
 
-	clntIns := middle.NewClientInspector(clnt, scrt, http.DefaultClient, securityUrl, "")
+	clntIns := middle.NewClientInspector(clnt, scrt, http.DefaultClient, securityUrl, managerUrl, "")
 	r.HandleFunc("/", clntIns.Middleware(Index(tmpl), make(map[string]bool))).Methods(http.MethodGet)
 	r.HandleFunc("/login", clntIns.Middleware(LoginGET(tmpl), map[string]bool{"entity.login.apply": true})).Queries("state", "{state}", "client", "{client}").Methods(http.MethodGet)
 

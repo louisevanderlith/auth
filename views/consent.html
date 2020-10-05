@@ -1,9 +1,43 @@
 {{template "master.html" .}}
-{{define "layoutcontent"}}<H1>Consent Here</H1>
-<span>{{.}}</span>
-<ul>
-    {{range .Concern}}
-        <li>{{.}}</li>
-    {{end}}
-</ul>
+{{define "layoutcontent"}}
+    <section class="hero">
+        <div class="hero-body">
+            <div class="container has-text-centered">
+                <div class="column is-4 is-offset-4">
+                    <h3 class="title has-text-grey">Welcome, {{.Data.Username}}</h3>
+                    <p class="subtitle has-text-grey">Please provide consent to {{.Data.ID}}.</p>
+                    <div class="box">
+                        <form id="frmConsent" role="form" data-toggle="validator">
+                            <input type="hidden" id="hdnCallback" value="{{.Data.Callback}}"/>
+                            <div class="field">
+                                <div class="control">
+                                    <label class="label" for="lstConcerns">{{.Data.ID}} accesses these
+                                        resources.</label>
+                                    <ul id="lstConcerns">
+                                        {{range $k, $v := .Data.Concern}}
+                                            <li>
+                                                <label class="checkbox">
+                                                    <input type="checkbox" value="{{$k}}" checked/>
+                                                    {{$k}}
+                                                </label>
+                                                {{range $v}}
+                                                    <span>{{.}}</span>
+                                                {{end}}
+                                            </li>
+                                        {{end}}
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="control">
+                                <button type="button"
+                                        class="button is-link is-fullwidth has-text-weight-medium is-medium"
+                                        id="btnSubmit">Approve
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 {{end}}
